@@ -1,0 +1,26 @@
+<html>
+<head>
+	<title>twidget 测试页面</title>
+	<script type="text/javascript" src="../src/base.js"></script>
+	<script type="text/javascript" src="../src/lib/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="../src/record.widget.util.js"></script>
+	<script type="text/javascript" src="../src/record.dropMenu.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			var menu = new Record.DropMenu({
+				trigger: '#dropmenu-1',
+				name: 'menu-1',
+				value: 'option1',
+				model: [
+					{value: '1', text: 'option1'},
+					{value: '2', text: 'option2'},
+					{value: '3', text: 'option3'}
+				]
+			}).render();
+		})
+	</script>
+</head>
+<body>
+	<a href="javascript:;" id="dropmenu-1">option1</a>
+</body>
+</html>
