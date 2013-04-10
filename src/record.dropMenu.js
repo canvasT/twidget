@@ -1,6 +1,7 @@
 $(function(){
-	P('Record').DropMenu = Record.Class({
+	P('Record').DropMenu = Record.Class().extend(Record.Event, {
 		init: function(options){
+			this.superInit();
 			this.CONST = {
 				
 			};
@@ -11,7 +12,7 @@ $(function(){
 	            container: null,
 	            classPrefix: 'ui-dropmenu',
 	            name: null,
-	            value: null,
+	            //value: null,
 	            length: 0,
 	            selectedIndex: 0,
 	            disabled: false
@@ -19,14 +20,14 @@ $(function(){
 
 	        this._opts = $.extend(true, {}, defaults, options);
 	        this._trigger = $(this._opts.trigger);
-	        this._container = this._opts.container ? $(this._opts.container) : $('<div><div>').appendTo('body');
+	        this._container = (this._opts.container ? $(this._opts.container) : $('<div><div>')).appendTo('body');
 	        this._widgetId = wUtil.getId('widget');
 	        this._positioned = false;
 	        this.name = this._opts.name;
 	        this.value = this._opts.name;
 
 	        this._container.addClass(this._opts.classPrefix).attr('widget-id', this._widgetId).hide();
-	       	
+	       	this._trigger.addClass(this._opts.classPrefix + '-trigger');
 	    },
 	    _initDom: function(){
 	    	var that = this;
@@ -37,7 +38,7 @@ $(function(){
 	    	})
 	    	content.push('</ul>');
 
-	    	this._container.append(content.join(''));
+	    	this._container.html(content.join(''));
 	    },
 	    _bindEvent: function(){
 	    	var that = this;
@@ -50,7 +51,8 @@ $(function(){
 		    			tOffset = that._trigger.offset();
 		    			that._container.css({
 		    				top: tOffset.top + that._trigger.outerHeight(),
-		    				left: tOffset.left
+		    				left: tOffset.left,
+		    				position: 'absolute'
 		    			});
 		    		}
 		    		that._container.show();
@@ -60,6 +62,7 @@ $(function(){
 	    	this._container.find('[data-role=item]').bind('click', function(e){
 	    		e.stopPropagation();
 	    		that.select($(this));
+	    		
 	    	})
 	    },
 	    select: function(item){
@@ -77,6 +80,7 @@ $(function(){
 	    	}
 
 	    	this._container.hide();
+	    	this.trigger('change');
 	    },
 	    updateModel: function(){
 
@@ -96,5 +100,9 @@ $(function(){
 
 	    	return this;
 	    }
+	});
+
+	$(document).bind('click', function(){
+		$('.ui-dropmenu').hide();
 	});
 });

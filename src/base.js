@@ -155,7 +155,7 @@
 		};
 	};
 
-	/*P('Util').objectCopy = function(o){
+	P('Util').objectCopy = function(o){
 		var F = function(){};
 		F.prototype = o;
 		return new F();
@@ -168,9 +168,8 @@
 		Sub.super = Super.prototype;
 		Sub.prototype = proto;
 
-
 		for(key in ext){
 			Sub.prototype[key] = ext[key];
 		};
-	};*/
+	};
 })()
