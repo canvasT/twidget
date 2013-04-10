@@ -21,12 +21,12 @@
 				model: [
 					{value: '1', text: 'option1'},
 					{value: '2', text: 'option2'},
-					{value: '3', text: 'option3adfa'}
+					{value: '3', text: 'option3', selected: true}
 				]
 			}).render();
 
 			menu.bind('change', function(value, text){
-				alert('value:' + value + '; text:' + text)
+				//alert('value:' + value + '; text:' + text)
 			});
 
 			$('.js-add-option-btn').bind('click', function(){

@@ -17,8 +17,13 @@ $(function(){
 	            selectedIndex: 0,
 	            disabled: false
 	        };
-
 	        this._opts = $.extend(true, {}, defaults, options);
+	        var classPrefix = this._opts.classPrefix;
+	        this.CONST.TRIGGER_CLS = classPrefix + '-trigger';
+	        this.CONST.SELECTED_CLS = classPrefix + '-item-selected';
+	        this.CONST.ITEM_CLS = classPrefix + '-item';
+	        this.CONST.CONTENT_CLS = classPrefix + '-content';
+
 	        this._trigger = $(this._opts.trigger);
 	        this._container = (this._opts.container ? $(this._opts.container) : $('<div><div>')).appendTo('body');
 	        this._widgetId = wUtil.getId('widget');
@@ -29,14 +34,15 @@ $(function(){
 	        this.length = this._model.length;
 
 	        this._container.addClass(this._opts.classPrefix).attr('widget-id', this._widgetId).hide();
-	       	this._trigger.addClass(this._opts.classPrefix + '-trigger');
+	       	this._trigger.addClass(this.CONST.TRIGGER_CLS);
 	    },
 	    /**
 	     * 生成组件所需的dom节点
 	     * @return null
 	     */
 	    _initDom: function(){
-	    	this._updateList();
+	    	var seltIndex = this._updateList();
+	    	this.select(seltIndex);
 	    },
 	    /**
 	     * 更新下拉框dom
@@ -44,14 +50,18 @@ $(function(){
 	     */
 	    _updateList: function(){
 	    	var that = this;
-	    	var content = ['<ul class="', this._opts.classPrefix, '-content" data-role="content">'];
+	    	var content = ['<ul class="', this.CONST.CONTENT_CLS, '" data-role="content">'];
+	    	var seltIndex = 0;
 	    	$.each(this._model, function(i, o){
-	    		content.push('<li class="', that._opts.classPrefix, '-item" data-role="item" data-value="', o.value, 
+	    		content.push('<li class="', that.CONST.ITEM_CLS, '', (o.selected ? ' ' + that.CONST.SELECTED_CLS : ""), '" data-role="item" data-value="', o.value, 
 	    			'" data-selected="', (o.selected ? true : false), '">', o.text, '</li>');
+	    		if(o.selected)
+	    			seltIndex = i;
 	    	})
 	    	content.push('</ul>');
-
-	    	this._container.html(content.join(''));	
+	    	this._container.html(content.join(''));
+	    	return seltIndex;
+	    	//this.select(seltIndex);
 	    },
 	    /**
 	     * 绑定组件所需的事件
@@ -102,16 +112,23 @@ $(function(){
 	     */
 	    select: function(item){
 	    	var $seltItem
+    		var $items = this._container.find('[data-role=item]');
 	    	if(typeof item == 'number'){
-	    		var $items = this._container.find('[data-role=item]');
 	    		$seltItem = $($items.get(item));
 	    	}else{
 	    		$seltItem = $(item);
 	    	}
 
 	    	if($seltItem.length > 0){
+	    		var seltIndex = $items.index($seltItem);
+	    		var preSelected = wUtil.getObjFromArr(this._model, 'selected', true);
+
+	    		preSelected.selected = false;
+	    		this._model[seltIndex].selected = true;
 	    		this.value = $seltItem.attr('data-value');
 	    		this._trigger.text($seltItem.text());
+	    		this._container.find('.' + this.CONST.SELECTED_CLS).removeClass(this.CONST.SELECTED_CLS);
+	    		$seltItem.addClass(this.CONST.SELECTED_CLS);
 		    	this.trigger('change', this.value, $seltItem.text());
 	    	}
 
@@ -130,7 +147,7 @@ $(function(){
 	    	if(!!model){
 	    		this._model = model
 	    	}
-	    	this.select(0);
+	    	
 	    	this.length = this._model.length;
 	    	this._updateList();
 	    	this._bindListEvent();
@@ -157,8 +174,20 @@ $(function(){
 
 	    	if(typeof option == 'number'){
 	    		var index = Math.min(option, this.length - 1);
-	    		this._model.splice(index, 1);
+	    		var optionRemoved = this._model.splice(index, 1)[0];
+	    		var curSeltIndex;
+	    		if(optionRemoved.selected){
+	    			if(index == this.length - 1){
+	    				curSeltIndex = 0;
+	    			}else{
+	    				curSeltIndex = index;
+	    			}
+	    			this._model[curSeltIndex].selected = true;
+	    		}
 	    		this.updateModel();
+	    		if(optionRemoved.selected){
+		    		this.select(curSeltIndex);
+	    		}
 	    	}
 	    },
 	    /**
