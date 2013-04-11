@@ -32,6 +32,7 @@ $(function(){
 	        this.name = this._opts.name;
 	        //this.value = this._opts.name;
 	        this.length = this._model.length;
+	        this._curIndex = 0;
 
 	        this._container.addClass(this._opts.classPrefix).attr('widget-id', this._widgetId).hide();
 	       	this._trigger.addClass(this.CONST.TRIGGER_CLS);
@@ -103,6 +104,7 @@ $(function(){
 	    },
 	    /**
 	     * 选中某一项
+	     * 请务必在更新完model和下拉框dom后再调用
 	     * @param  {Number|String|DOM} item 
 	     *         						支持三种：
 		 * 								列表索引，为 Number
@@ -125,6 +127,7 @@ $(function(){
 
 	    		preSelected.selected = false;
 	    		this._model[seltIndex].selected = true;
+	    		this._curIndex = seltIndex;
 	    		this.value = $seltItem.attr('data-value');
 	    		this._trigger.text($seltItem.text());
 	    		this._container.find('.' + this.CONST.SELECTED_CLS).removeClass(this.CONST.SELECTED_CLS);
