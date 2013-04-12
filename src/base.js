@@ -14,7 +14,7 @@
 	window.P = function(_namespace, _context) {
 	    if (!_namespace || !_namespace.length) return null;
 
-	    var _package = context || window,
+	    var _package = _context || window,
 	    	arr = _namespace.split('.'),
 	    	len = arr.length;
 

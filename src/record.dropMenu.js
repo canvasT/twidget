@@ -25,7 +25,7 @@ $(function(){
 	        this.CONST.CONTENT_CLS = classPrefix + '-content';
 
 	        this._trigger = $(this._opts.trigger);
-	        this._container = (this._opts.container ? $(this._opts.container) : $('<div><div>')).appendTo('body');
+	        this._container = (this._opts.container ? $(this._opts.container) : $('<div></div>')).appendTo('body');
 	        this._widgetId = wUtil.getId('widget');
 	        this._positioned = false;
 	        this._model = this._opts.model || [];

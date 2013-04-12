@@ -50,7 +50,7 @@ $(function(){
 	    	this._finish(this._opts.source)
 	    },
 	    _getFunctionData: function(queryStr){
-	    	var result = optSource(queryStr);
+	    	var result = this._opts.source(queryStr);
 	    	var finish = function(data){
 	    		this._finish(data);
 	    	}

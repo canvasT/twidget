@@ -18,3 +18,7 @@ th,caption{text-align:left}
 .ui-dropmenu-item{padding: 0px 8px; cursor: pointer;}
 .ui-dropmenu-item-selected{background-color: #FF4411;}
 .ui-dropmenu-item:hover{background-color: #aaa;}
+
+.ui-complete-content{border: 1px solid #aaa; background-color: #fff;}
+.ui-complete-item{padding: 0px 8px; cursor: pointer;}
+.ui-complete-item-selected{background-color: #FF4411;}

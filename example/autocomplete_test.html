@@ -11,13 +11,14 @@
 	<script type="text/javascript" src="../src/lib/jquery-1.7.2.min.js"></script>
 	<script type="text/javascript" src="../src/record.widget.util.js"></script>
 	<script type="text/javascript" src="../src/record.event.js"></script>
+	<script type="text/javascript" src="../src/record.datasource.js"></script>
 	<script type="text/javascript" src="../src/record.autocomplete.js"></script>
 	<script type="text/javascript">
 		$(function(){
 			var signatories = [{"id":1,"name":"ftt","address":"hangzhou","cellphone":"15233445566","telphone":"021-12345678","email":"canvast@yeah.net"},{"id":2,"name":"sopheya","address":"ningbo","cellphone":"15313459998","telphone":"021-12345678","email":"lala@163.com"},{"id":3,"name":"sig_1","address":"hangzhou","cellphone":"15800000000","telphone":"021-12345678","email":"a@163.com"}];
 			var clients = [{"id":1,"name":"EDM测试有限公司1","industry":"EDM-开发","senders":[],"address":"网易杭州研发大厦4F","cellphone":"13800000000","telphone":"0571-12345678","email":"edm@service.netease.com","urs":"hfdiao@163.com","authTime":1362647777000},{"id":2,"name":"黄页测试有限公司2","industry":"EDM-测试","senders":[],"address":"网易杭州研发大厦4F","cellphone":"13800000000","telphone":"0571-12345678","email":"edm@service.netease.com","urs":"hfdiao@126.com","authTime":1362648777000},{"id":3,"name":"简约测试有限公司3","industry":"EDM-策划","senders":[],"address":"网易杭州研发大厦4F","cellphone":"13800000000","telphone":"0571-12345678","email":"edm@service.netease.com","urs":"hfdiao@yeah.net","authTime":1362649777000},{"id":13,"name":"bird","industry":null,"senders":["canvast_test@163.com"],"address":"b@163.com","cellphone":"15823457754","telphone":"021-87654321","email":"b@164.com","urs":"canvast_test1@yeah.net","authTime":1363231755000},{"id":14,"name":"pig","industry":null,"senders":["canvast_test_1@163.com","canvast_test_2@163.com"],"address":"shanghai","cellphone":"15311223344","telphone":"021-87654321","email":"153@163.com","urs":"canvast_test2@yeah.net","authTime":1363232995000},{"id":15,"name":"tom","industry":null,"senders":["canvast_test@yeah.net","canvast_test_1@yeah.net"],"address":"beijing","cellphone":"18712347776","telphone":"0571-12345678","email":"canvast@163.com","urs":"canvast@163.com","authTime":1363233261000},{"id":16,"name":"tomc","industry":null,"senders":["haha@163.com","fsdfsf@163.com"],"address":null,"cellphone":null,"telphone":null,"email":null,"urs":"canvast_test_1@yeah.net","authTime":1363241174000},{"id":17,"name":"nicka","industry":null,"senders":["haha@163.com","fsdfsf@163.com"],"address":null,"cellphone":null,"telphone":null,"email":null,"urs":"a@163.com","authTime":1363241409000},{"id":18,"name":"client_1","industry":"EDM-1","senders":[],"address":"shanghai","cellphone":"15800000000","telphone":"021-12345678","email":"b@163.com","urs":"canvast_test_2@yeah.net","authTime":1363241409000}];
 
-			var autocomplete = new Record.Autocomplete({
+			var autocomplete = new Record.AutoComplete({
 				trigger: '#input',
 				model: function(value){
 					var result = [];
@@ -30,7 +31,7 @@
 
 					return result;
 				}
-			});
+			}).render();
 			
 		})
 	</script>

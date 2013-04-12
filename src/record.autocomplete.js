@@ -1,5 +1,16 @@
+var isInputEventSupport = typeof window.screenX + '' != 'undefined'
+
 $(function(){
 	P('Record').AutoComplete = Record.Class().extend(Record.Event, {
+		KEY_MAP: {
+			UP: 38,
+	        DOWN: 40,
+	        LEFT: 37,
+	        RIGHT: 39,
+	        ENTER: 13,
+	        ESC: 27,
+	        BACKSPACE: 8
+		},
 		init: function(options){
 			this.superInit();
 			this.CONST = {};
@@ -22,12 +33,14 @@ $(function(){
 	        this.CONST.CONTENT_CLS = classPrefix + '-content';
 
 	        this._trigger = $(this._opts.trigger);
-	        this._container = (this._opts.container ? $(this._opts.container) : $('<div><div>')).appendTo('body');
+	        this._container = (this._opts.container ? $(this._opts.container) : $('<div></div>')).appendTo('body');
 	        this._widgetId = wUtil.getId('widget');
 	        this._positioned = false;
 	        this._model = new Record.DataSource({
 	        	source: this._opts.model || []
 	        });
+	        this._curIndex = -1;
+	        this._listSize = 0;
 
 	        this._container.addClass(this._opts.classPrefix).attr('widget-id', this._widgetId).hide();
 	       	this._trigger.addClass(this.CONST.TRIGGER_CLS);
@@ -37,10 +50,10 @@ $(function(){
 	     * @return null
 	     */
 	    _initDom: function(){
-	    	if(!that._opts.container){
-		    	var tOffset = that._trigger.offset();
+	    	if(!this._opts.container){
+		    	var tOffset = this._trigger.offset();
 		    	this._container.css({
-					top: tOffset.top + that._trigger.outerHeight(),
+					top: tOffset.top + this._trigger.outerHeight(),
 					left: tOffset.left,
 					position: 'absolute',
 					'z-index': '99'
@@ -52,15 +65,19 @@ $(function(){
 	     * 更新下拉框dom
 	     * @return null
 	     */
-	    _updateList: function(){
+	    _updateList: function(data){
 	    	var that = this;
 	    	var content = ['<ul class="', this.CONST.CONTENT_CLS, '" data-role="content">'];
-	    	$.each(this._model, function(i, o){
-	    		content.push('<li class="', that.CONST.ITEM_CLS, '', '" data-role="item" data-value="', o.value, 
-	    			'>', o.text, '</li>');
+	    	$.each(data, function(i, o){
+	    		content.push('<li class="', that.CONST.ITEM_CLS, '', '" data-role="item" data-value="', o, 
+	    			'">', o, '</li>');
 	    	})
 	    	content.push('</ul>');
 	    	this._container.html(content.join(''));
+	    	this._bindListEvent();
+	    	this._curIndex = -1;
+	    	this._listSize = data.length;
+	    	this._listItems = this._container.find('.' + this.CONST.ITEM_CLS);
 	    },
 	    /**
 	     * 绑定组件所需的事件
@@ -68,17 +85,79 @@ $(function(){
 	     */
 	    _bindEvent: function(){
 	    	var that = this;
-	    	this._trigger.on('keyup.complete', $.proxy(this._onKeyup, this));
+	    	var eventType = isInputEventSupport ? 'input' : 'propertychange'
+	    	this._trigger.on(eventType + '.complete', $.proxy(this._onValueChange, this));
+	    	this._trigger.on('keydown.complete', $.proxy(this._onKeydown, this));
 
 	        this._model.bind('data', function(data){
-	        	this._updateList(data);
+	        	that._updateList(data);
+	        	that._container.show();
 	        });
 	    },
-	    _onKeyup: function(e){
+	    _onValueChange: function(e){
 	    	var $input = $(e.currentTarget);
 	    	var value = $input.val();
 
 	    	this._model.getData(value);
+	    },
+	    _onKeydown: function(e){
+	    	var key = e.which;
+
+	    	switch(key){
+	    		case this.KEY_MAP.DOWN:
+	    			this._keyDown();
+	    			break;
+	    		case this.KEY_MAP.UP:
+	    			this._keyUp();
+	    			break;
+	    		case this.KEY_MAP.LEFT: 
+	    			this._keyLeft();
+	    			break;
+	    		case this.KEY_MAP.RIGHT:
+	    			this._keyRight();
+	    			break;
+	    		case this.KEY_MAP.ENTER:
+	    			this._keyEnter();
+	    			break;
+	    		case this.KEY_MAP.ESC:
+	    			this._keyEsc();
+	    			break;
+	    		case this.KEY_MAP.BACKSPACE:
+	    			this._keyBackspace();
+	    			break;
+	    		default:
+	    			break;
+	    	}
+	    },
+	    _keyDown: function(){
+	    	this._curIndex = this._curIndex < this._listSize - 1 ? this._curIndex + 1 : 0;
+	    	this._listItems.removeClass(this.CONST.SELECTED_CLS).eq(this._curIndex).addClass(this.CONST.SELECTED_CLS);
+	    },
+	    _keyUp: function(){
+	    	this._curIndex = this._curIndex > 0 ? this._curIndex - 1 : this._listSize - 1;
+	    	this._listItems.removeClass(this.CONST.SELECTED_CLS).eq(this._curIndex).addClass(this.CONST.SELECTED_CLS);
+	    },
+	    _keyLeft: function(){
+	    	//TODO
+	    },
+	    _keyRight: function(){
+	    	//TODO
+	    },
+	    _keyEnter: function(){
+	    	var $selected = $('.' + this.CONST.SELECTED_CLS);
+	    	if($selected.length){
+		    	var value = $selected.attr('data-value');
+
+		    	this._trigger.val(value);
+		    	this.trigger('select', value)
+	    	}
+	    	this._container.hide();
+	    },
+	    _keyEsc: function(){
+	    	this._container.hide();
+	    },
+	    _keyBackspace: function(){
+	    	//TODO
 	    },
 	    /**
 	     * 绑定下拉菜单相关的事件
@@ -87,9 +166,10 @@ $(function(){
 	     */
 	    _bindListEvent: function(){
 	    	var that = this;
-	    	this._container.find('[data-role=item]').bind('click', function(e){
-	    		e.stopPropagation();
-	    		that.select($(this));
+	    	this._container.find('[data-role=item]').bind('mouseenter', function(e){
+	    		that._listItems.eq(that._curIndex).removeClass(that.CONST.SELECTED_CLS);
+	    		that._curIndex = that._listItems.index($(this));
+	    		$(this).addClass(that.CONST.SELECTED_CLS);
 	    	})
 	    },
 	    /**
