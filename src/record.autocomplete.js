@@ -94,12 +94,22 @@ $(function(){
 	        	that._container.show();
 	        });
 	    },
+	    /**
+	     * trigger值改变时的处理函数
+	     * @param  {Object} e jQuery event object
+	     * @return null
+	     */
 	    _onValueChange: function(e){
 	    	var $input = $(e.currentTarget);
 	    	var value = $input.val();
 
 	    	this._model.getData(value);
 	    },
+	    /**
+	     * keydown事件处理函数
+	     * @param  {Object} e jQuery event object
+	     * @return null
+	     */
 	    _onKeydown: function(e){
 	    	var key = e.which;
 
@@ -129,33 +139,54 @@ $(function(){
 	    			break;
 	    	}
 	    },
+	    /**
+	     * the handler when press arrow Down
+	     * @return null
+	     */
 	    _keyDown: function(){
 	    	this._curIndex = this._curIndex < this._listSize - 1 ? this._curIndex + 1 : 0;
 	    	this._listItems.removeClass(this.CONST.SELECTED_CLS).eq(this._curIndex).addClass(this.CONST.SELECTED_CLS);
 	    },
+	    /**
+	     * the handler when press arrow Up
+	     * @return null
+	     */
 	    _keyUp: function(){
 	    	this._curIndex = this._curIndex > 0 ? this._curIndex - 1 : this._listSize - 1;
 	    	this._listItems.removeClass(this.CONST.SELECTED_CLS).eq(this._curIndex).addClass(this.CONST.SELECTED_CLS);
 	    },
+	    /**
+	     * the handler when press arrow Left
+	     * @return null
+	     */
 	    _keyLeft: function(){
 	    	//TODO
 	    },
+	    /**
+	     * the handler when press arrow Right
+	     * @return null
+	     */
 	    _keyRight: function(){
 	    	//TODO
 	    },
+	    /**
+	     * the handler when press ENTER
+	     * @return null
+	     */
 	    _keyEnter: function(){
-	    	var $selected = $('.' + this.CONST.SELECTED_CLS);
-	    	if($selected.length){
-		    	var value = $selected.attr('data-value');
-
-		    	this._trigger.val(value);
-		    	this.trigger('select', value)
-	    	}
-	    	this._container.hide();
+	    	this._selectItem();
 	    },
+	    /**
+	     * the handler when press ESC
+	     * @return null
+	     */
 	    _keyEsc: function(){
 	    	this._container.hide();
 	    },
+	    /**
+	     * the handler when press Backspece
+	     * @return null
+	     */
 	    _keyBackspace: function(){
 	    	//TODO
 	    },
@@ -170,7 +201,19 @@ $(function(){
 	    		that._listItems.eq(that._curIndex).removeClass(that.CONST.SELECTED_CLS);
 	    		that._curIndex = that._listItems.index($(this));
 	    		$(this).addClass(that.CONST.SELECTED_CLS);
+	    	}).bind('click', function(){
+	    		that._selectItem();
 	    	})
+	    },
+	    _selectItem: function(){
+	    	var $selected = $('.' + this.CONST.SELECTED_CLS);
+	    	if($selected.length){
+		    	var value = $selected.attr('data-value');
+
+		    	this._trigger.val(value);
+		    	this.trigger('select', value)
+	    	}
+	    	this._container.hide();
 	    },
 	    /**
 	     * 组件渲染函数，与init分开的目的是不需要在组件初始化时就生成节点或绑定事件，再有需要的时候再进行渲染
