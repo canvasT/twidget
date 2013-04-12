@@ -37,6 +37,15 @@ $(function(){
 	     * @return null
 	     */
 	    _initDom: function(){
+	    	if(!that._opts.container){
+		    	var tOffset = that._trigger.offset();
+		    	this._container.css({
+					top: tOffset.top + that._trigger.outerHeight(),
+					left: tOffset.left,
+					position: 'absolute',
+					'z-index': '99'
+				});
+	    	}
 	    	//this._updateList();
 	    },
 	    /**
@@ -59,30 +68,17 @@ $(function(){
 	     */
 	    _bindEvent: function(){
 	    	var that = this;
+	    	this._trigger.on('keyup.complete', $.proxy(this._onKeyup, this));
 
 	        this._model.bind('data', function(data){
-	        	
+	        	this._updateList(data);
 	        });
-	        /*
-	    	this._trigger.bind('click', function(e){
-	    		e.stopPropagation();
-	    		if(that._container.is(':visible')){
-	    			that._container.hide();
-	    		}else{
-		    		if(!that._opts.container && !that._positioned){
-		    			tOffset = that._trigger.offset();
-		    			that._container.css({
-		    				top: tOffset.top + that._trigger.outerHeight(),
-		    				left: tOffset.left,
-		    				position: 'absolute',
-		    				'z-index': '99'
-		    			});
-		    		}
-		    		that._container.show();
-	    		}
-	    	})
+	    },
+	    _onKeyup: function(e){
+	    	var $input = $(e.currentTarget);
+	    	var value = $input.val();
 
-	    	this._bindListEvent();*/
+	    	this._model.getData(value);
 	    },
 	    /**
 	     * 绑定下拉菜单相关的事件

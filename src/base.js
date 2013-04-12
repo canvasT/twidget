@@ -11,10 +11,10 @@
 	 * @param  {String} _namespace 命名空间的名称.
 	 * @return {Object}            生成的命名空间对象.
 	 */
-	window.P = function(_namespace) {
+	window.P = function(_namespace, _context) {
 	    if (!_namespace || !_namespace.length) return null;
 
-	    var _package = window,
+	    var _package = context || window,
 	    	arr = _namespace.split('.'),
 	    	len = arr.length;
 

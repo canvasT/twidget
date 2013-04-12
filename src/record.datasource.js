@@ -1,39 +1,69 @@
 $(function(){
-	P('Record').AutoComplete = Record.Class().extend(Record.Event, {
+	P('Record').DataSource = Record.Class().extend(Record.Event, {
 		init: function(options){
 			this.superInit();
-			this.CONST = {};
-			var that = this;
 	        var defaults = {
-	            trigger: null,
-	            model: null,
-	            container: null,
-	            classPrefix: 'ui-complete',
-	            disabled: false,
-	            locator: null,
-	            delay: 300,
-	            selectFirst: false
+	            source: null
 	        };
 	        this._opts = $.extend(true, {}, defaults, options);
-	        var classPrefix = this._opts.classPrefix;
-	        this.CONST.TRIGGER_CLS = classPrefix + '-trigger';
-	        this.CONST.SELECTED_CLS = classPrefix + '-item-selected';
-	        this.CONST.ITEM_CLS = classPrefix + '-item';
-	        this.CONST.CONTENT_CLS = classPrefix + '-content';
-
-	        this._trigger = $(this._opts.trigger);
-	        this._container = (this._opts.container ? $(this._opts.container) : $('<div><div>')).appendTo('body');
-	        this._widgetId = wUtil.getId('widget');
-	        this._positioned = false;
-	        this._model = new Record.DataSource({
-	        	source: this._opts.model || []
-	        });
-
-	        this._container.addClass(this._opts.classPrefix).attr('widget-id', this._widgetId).hide();
-	       	this._trigger.addClass(this.CONST.TRIGGER_CLS);
+	        var source = this._opts.source;
+	       	if(wUtil.isArray(source)){
+	       		this._type = 'Url';
+	       	}else if(wUtil.isObject(source)){
+	       		this._type = 'Object';
+	       	}else if(wUtil.isFunction(source)){
+	       		this._type = 'Function';
+	       	}else if(wUtil.isArray(source)){
+	       		this._type = 'Array';
+	       	}
 	    },
 	    getData: function(queryStr){
+	    	this['_get' + this._type + 'Data'](queryStr);
+	    },
+	    _getUrlData: function(queryStr){
+	    	$.ajax({
+    			url: this._opts.source,
+    			type: 'POST',
+    			data: {
+    				q: queryStr,
+    				t: new Date().getTime()
+    			},
+    			success: function(result){
+    				var data;
+    				if(this._opts.locator){
+    					data = P(this._opts.locator, result);
+    				}else{
+    					data = result;
+    				}
 
+    				this.trigger('data', data);
+    			},
+    			error: function(){
+
+    			}
+    		});
+	    },
+	    _getArrayData: function(){
+	    	this._finish(this._opts.source)
+	    },
+	    _getObjectData: function(){
+	    	this._finish(this._opts.source)
+	    },
+	    _getFunctionData: function(queryStr){
+	    	var result = optSource(queryStr);
+	    	var finish = function(data){
+	    		this._finish(data);
+	    	}
+    		if(result){
+    			this.trigger('data', result);
+    		}else{
+    			this._opts.source.apply(this, queryStr, finish);
+    		}
+	    },
+	    _finish: function(data){
+	    	if(data){
+		    	this.trigger('data', data);
+	    	}
 	    }
 	});
 });
