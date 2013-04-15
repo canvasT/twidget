@@ -205,6 +205,10 @@ $(function(){
 	    		that._selectItem();
 	    	})
 	    },
+	    /**
+	     * 选中选项
+	     * @return null
+	     */
 	    _selectItem: function(){
 	    	var $selected = $('.' + this.CONST.SELECTED_CLS);
 	    	if($selected.length){

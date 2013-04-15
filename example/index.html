@@ -9,6 +9,7 @@
 
 	<script type="text/javascript" src="../src/base.js"></script>
 	<script type="text/javascript" src="../src/lib/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="../src/lib/jquery.jqote2.js"></script>
 	<script type="text/javascript" src="../src/record.widget.util.js"></script>
 	<script type="text/javascript" src="../src/record.event.js"></script>
 	<script type="text/javascript" src="../src/record.dropMenu.js"></script>
@@ -22,7 +23,13 @@
 					{value: '1', text: 'option1'},
 					{value: '2', text: 'option2'},
 					{value: '3', text: 'option3', selected: true}
-				]
+				],
+				templete: '<ul class="ui-dropmenu-content">' + 
+					'<% for(var i = 0, len = this.data.length; i < len; i++){ %>' +
+						'<% var item = this.data[i]; %>' + 
+						'<li><a class="ui-dropmenu-item" data-role="item" data-value="<%= item.value %>" data-selected="<%= item.selected ? true : false %>"><%= item.text %></a></li>' +
+					'<% } %>' +
+				'</ul>'
 			}).render();
 
 			menu.bind('change', function(value, text){
@@ -41,6 +48,16 @@
 					alert('请填写text');
 				}
 			})
+
+			var json = {name: 'ftt', email: 'canvast@163.com'}
+			function sub(str,data) {
+			    return str
+			        .replace(/{(.*?)}/igm,function($,$1) {
+			            return data[$1]?data[$1]:$;
+			        });
+			}
+
+			console.log(sub("{name}(email: {email})", json))
 		})
 	</script>
 </head>

@@ -12,10 +12,10 @@ $(function(){
 	            container: null,
 	            classPrefix: 'ui-dropmenu',
 	            name: null,
-	            //value: null,
-	            //length: 0,
 	            selectedIndex: 0,
-	            disabled: false
+	            disabled: false,
+	            autoSet: true,
+	            templete: null
 	        };
 	        this._opts = $.extend(true, {}, defaults, options);
 	        var classPrefix = this._opts.classPrefix;
@@ -30,9 +30,14 @@ $(function(){
 	        this._positioned = false;
 	        this._model = this._opts.model || [];
 	        this.name = this._opts.name;
-	        //this.value = this._opts.name;
 	        this.length = this._model.length;
 	        this._curIndex = 0;
+	        this._templete = this._opts.templete ? $.jqotec(this._opts.templete) : '<ul class="', this.CONST.CONTENT_CLS, '">' + 
+				'<% for(var i = 0, len = this.data.length; i < len; i++){ %>' +
+					'<% var item = this.data[i]; %>' + 
+					'<a class="', this.CONST.ITEM_CLS, '" data-role="item" data-value="<%= item.value %>" data-selected="<%= item.selected ? true : false %>"><%= item.text %></a>' +
+				'<% } %>' +
+			'</ul>';
 
 	        this._container.addClass(this._opts.classPrefix).attr('widget-id', this._widgetId).hide();
 	       	this._trigger.addClass(this.CONST.TRIGGER_CLS);
@@ -51,16 +56,12 @@ $(function(){
 	     */
 	    _updateList: function(){
 	    	var that = this;
-	    	var content = ['<ul class="', this.CONST.CONTENT_CLS, '" data-role="content">'];
 	    	var seltIndex = 0;
-	    	$.each(this._model, function(i, o){
-	    		content.push('<li class="', that.CONST.ITEM_CLS, '', (o.selected ? ' ' + that.CONST.SELECTED_CLS : ""), '" data-role="item" data-value="', o.value, 
-	    			'" data-selected="', (o.selected ? true : false), '">', o.text, '</li>');
-	    		if(o.selected)
-	    			seltIndex = i;
-	    	})
-	    	content.push('</ul>');
-	    	this._container.html(content.join(''));
+    		this._container.jqotesub(this._templete, {data: this._model});
+    		for(var i = 0, len = this._model.length; i < len; i++){
+    			if(this._model[i].selected)
+    				seltIndex = i;
+    		}
 	    	return seltIndex;
 	    	//this.select(seltIndex);
 	    },
@@ -129,7 +130,8 @@ $(function(){
 	    		this._model[seltIndex].selected = true;
 	    		this._curIndex = seltIndex;
 	    		this.value = $seltItem.attr('data-value');
-	    		this._trigger.text($seltItem.text());
+	    		if(this._opts.autoSet)
+		    		this._trigger.text($seltItem.text());
 	    		this._container.find('.' + this.CONST.SELECTED_CLS).removeClass(this.CONST.SELECTED_CLS);
 	    		$seltItem.addClass(this.CONST.SELECTED_CLS);
 		    	this.trigger('change', this.value, $seltItem.text());
