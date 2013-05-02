@@ -15,7 +15,7 @@ $(function(){
 	            selectedIndex: 0,
 	            disabled: false,
 	            autoSet: true,
-	            templete: null
+	            template: null
 	        };
 	        this._opts = $.extend(true, {}, defaults, options);
 	        var classPrefix = this._opts.classPrefix;
@@ -32,7 +32,7 @@ $(function(){
 	        this.name = this._opts.name;
 	        this.length = this._model.length;
 	        this._curIndex = 0;
-	        this._templete = $.jqotec(this._opts.templete ? this._opts.templete : '<ul class="' + this.CONST.CONTENT_CLS + '">' + 
+	        this._template = $.jqotec(this._opts.template ? this._opts.template : '<ul class="' + this.CONST.CONTENT_CLS + '">' + 
 				'<% for(var i = 0, len = this.data.length; i < len; i++){ %>' +
 					'<% var item = this.data[i]; %>' + 
 					'<a class="' + this.CONST.ITEM_CLS + '" data-role="item" data-value="<%= item.value %>" data-selected="<%= item.selected ? true : false %>"><%= item.text %></a>' +
@@ -57,7 +57,7 @@ $(function(){
 	    _updateList: function(){
 	    	var that = this;
 	    	var seltIndex = 0;
-    		this._container.jqotesub(this._templete, {data: this._model});
+    		this._container.jqotesub(this._template, {data: this._model});
     		for(var i = 0, len = this._model.length; i < len; i++){
     			if(this._model[i].selected)
     				seltIndex = i;
