@@ -29,11 +29,14 @@
 						'<% var item = this.data[i]; %>' + 
 						'<li><a class="ui-dropmenu-item" data-role="item" data-value="<%= item.value %>" data-selected="<%= item.selected ? true : false %>"><%= item.text %></a></li>' +
 					'<% } %>' +
-				'</ul>'
+				'</ul>',
+				autoSet: false
 			}).render();
 
 			menu.bind('change', function(value, text){
 				//alert('value:' + value + '; text:' + text)
+				$('#dropmenu-1').find('.js-selected').text(text);
+				$('#dropmenu-1').find('.js-ipt').val(value);
 			});
 
 			$('.js-add-option-btn').bind('click', function(){
@@ -64,8 +67,8 @@
 <body>
 	<a href="javascript:;" id="dropmenu-1">option1</a>
 	<div id="add-option-mod">
-		<label for="added-value"></label><input type="text" id="added-value" name="added-value"/>
-		<label for="added-text"></label><input type="text" id="added-text" name="added-text"/>
+		<label for="added-value">value</label><input type="text" id="added-value" name="added-value"/>
+		<label for="added-text">text</label><input type="text" id="added-text" name="added-text"/>
 		<a href="javascript:;" class="js-add-option-btn">增加选项</a>
 	</div>
 </body>

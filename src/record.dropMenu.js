@@ -32,12 +32,12 @@ $(function(){
 	        this.name = this._opts.name;
 	        this.length = this._model.length;
 	        this._curIndex = 0;
-	        this._templete = this._opts.templete ? $.jqotec(this._opts.templete) : '<ul class="', this.CONST.CONTENT_CLS, '">' + 
+	        this._templete = $.jqotec(this._opts.templete ? this._opts.templete : '<ul class="' + this.CONST.CONTENT_CLS + '">' + 
 				'<% for(var i = 0, len = this.data.length; i < len; i++){ %>' +
 					'<% var item = this.data[i]; %>' + 
-					'<a class="', this.CONST.ITEM_CLS, '" data-role="item" data-value="<%= item.value %>" data-selected="<%= item.selected ? true : false %>"><%= item.text %></a>' +
+					'<a class="' + this.CONST.ITEM_CLS + '" data-role="item" data-value="<%= item.value %>" data-selected="<%= item.selected ? true : false %>"><%= item.text %></a>' +
 				'<% } %>' +
-			'</ul>';
+			'</ul>');
 
 	        this._container.addClass(this._opts.classPrefix).attr('widget-id', this._widgetId).hide();
 	       	this._trigger.addClass(this.CONST.TRIGGER_CLS);
