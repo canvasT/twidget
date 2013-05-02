@@ -23,7 +23,8 @@ $(function(){
 	            disabled: false,
 	            locator: null,
 	            delay: 300,
-	            selectFirst: false
+	            selectFirst: false,
+	            template: null
 	        };
 	        this._opts = $.extend(true, {}, defaults, options);
 	        var classPrefix = this._opts.classPrefix;
@@ -41,6 +42,12 @@ $(function(){
 	        });
 	        this._curIndex = -1;
 	        this._listSize = 0;
+	        this._template = $.jqotec(this._opts.template ? this._opts.template : '<ul class="' + this.CONST.CONTENT_CLS + '">' + 
+				'<% for(var i = 0, len = this.data.length; i < len; i++){ %>' +
+					'<% var item = this.data[i]; %>' + 
+					'<li class="' + this.CONST.ITEM_CLS + '" data-role="item" data-value="<%= item %>" ><%= item %></li>' +
+				'<% } %>' +
+			'</ul>');
 
 	        this._container.addClass(this._opts.classPrefix).attr('widget-id', this._widgetId).hide();
 	       	this._trigger.addClass(this.CONST.TRIGGER_CLS);
@@ -67,13 +74,7 @@ $(function(){
 	     */
 	    _updateList: function(data){
 	    	var that = this;
-	    	var content = ['<ul class="', this.CONST.CONTENT_CLS, '" data-role="content">'];
-	    	$.each(data, function(i, o){
-	    		content.push('<li class="', that.CONST.ITEM_CLS, '', '" data-role="item" data-value="', o, 
-	    			'">', o, '</li>');
-	    	})
-	    	content.push('</ul>');
-	    	this._container.html(content.join(''));
+	    	this._container.jqotesub(this._template, {data: data});
 	    	this._bindListEvent();
 	    	this._curIndex = -1;
 	    	this._listSize = data.length;
@@ -210,7 +211,7 @@ $(function(){
 	     * @return null
 	     */
 	    _selectItem: function(){
-	    	var $selected = $('.' + this.CONST.SELECTED_CLS);
+	    	var $selected = this._container.find('.' + this.CONST.SELECTED_CLS);
 	    	if($selected.length){
 		    	var value = $selected.attr('data-value');
 

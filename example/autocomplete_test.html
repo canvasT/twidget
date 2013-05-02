@@ -9,6 +9,7 @@
 
 	<script type="text/javascript" src="../src/base.js"></script>
 	<script type="text/javascript" src="../src/lib/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="../src/lib/jquery.jqote2.js"></script>
 	<script type="text/javascript" src="../src/record.widget.util.js"></script>
 	<script type="text/javascript" src="../src/record.event.js"></script>
 	<script type="text/javascript" src="../src/record.datasource.js"></script>
@@ -20,6 +21,7 @@
 
 			var autocomplete = new Record.AutoComplete({
 				trigger: '#input',
+				classPrefix: 'w-dropdown',
 				model: function(value){
 					var result = [];
 					for(var i = 0, len = signatories.length; i < len; i++){
