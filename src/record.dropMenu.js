@@ -15,7 +15,8 @@ $(function(){
 	            selectedIndex: 0,
 	            disabled: false,
 	            autoSet: true,
-	            template: null
+	            template: null,
+	            contentTemplate: null
 	        };
 	        this._opts = $.extend(true, {}, defaults, options);
 	        var classPrefix = this._opts.classPrefix;
@@ -38,6 +39,7 @@ $(function(){
 					'<a class="' + this.CONST.ITEM_CLS + '" data-role="item" data-value="<%= item.value %>" data-selected="<%= item.selected ? true : false %>"><%= item.text %></a>' +
 				'<% } %>' +
 			'</ul>');
+			this._contentTemplate = $.jqotec(this._opts.contentTemplate ? this._opts.contentTemplate : '<%= this.text %>');
 
 	        this._container.addClass(this._opts.classPrefix).attr('widget-id', this._widgetId).hide();
 	       	this._trigger.addClass(this.CONST.TRIGGER_CLS);
@@ -57,6 +59,7 @@ $(function(){
 	    _updateList: function(){
 	    	var that = this;
 	    	var seltIndex = 0;
+	    	
     		this._container.jqotesub(this._template, {data: this._model});
     		for(var i = 0, len = this._model.length; i < len; i++){
     			if(this._model[i].selected)
@@ -130,8 +133,7 @@ $(function(){
 	    		this._model[seltIndex].selected = true;
 	    		this._curIndex = seltIndex;
 	    		this.value = $seltItem.attr('data-value');
-	    		if(this._opts.autoSet)
-		    		this._trigger.text($seltItem.text());
+		    	this._trigger.jqotesub(this._contentTemplate, {value: this.value, text: $seltItem.text()});
 	    		this._container.find('.' + this.CONST.SELECTED_CLS).removeClass(this.CONST.SELECTED_CLS);
 	    		$seltItem.addClass(this.CONST.SELECTED_CLS);
 		    	this.trigger('change', this.value, $seltItem.text());
