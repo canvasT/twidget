@@ -1,13 +1,13 @@
 $(function(){
 
-	P('Record').GroupForm = Record.Class({
+	P('Record').GroupForm = Record.Class().extend(Record.Event, {
 		init: function(options){
 			this.CONST = {
 				ROOT_CLS: 'js-form-group',
 		        ADD_BTN_CLS: 'js-ico-add',
 		        DEL_BTN_CLS: 'js-ico-del',
 		        LAST_ITEM_CLS: 'js-item-last',
-		        FORM_ITEM_CLS: 'form-list',
+		        FORM_ITEM_CLS: 'js-formlist',
 		        ERR_IPT_CLS: 'ipts-err'
 			};
 			var that = this;
