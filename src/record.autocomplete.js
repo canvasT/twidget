@@ -51,6 +51,11 @@ $(function(){
 
 	        this._container.addClass(this._opts.classPrefix).attr('widget-id', this._widgetId).hide();
 	       	this._trigger.addClass(this.CONST.TRIGGER_CLS);
+
+	       	$(document).on('click.dropmenu' + this._widgetId, function(e){
+	       		if(e.target !== that._trigger[0])
+	       			that._container.hide();
+	       	})
 	    },
 	    /**
 	     * 生成组件所需的dom节点
@@ -92,7 +97,10 @@ $(function(){
 
 	        this._model.bind('data', function(data){
 	        	that._updateList(data);
-	        	that._container.show();
+	        	if(data.length)
+		        	that._container.show();
+		        else
+		        	that._container.hide();
 	        });
 	    },
 	    /**
@@ -116,9 +124,11 @@ $(function(){
 
 	    	switch(key){
 	    		case this.KEY_MAP.DOWN:
+	    			e.preventDefault();
 	    			this._keyDown();
 	    			break;
 	    		case this.KEY_MAP.UP:
+	    			e.preventDefault();
 	    			this._keyUp();
 	    			break;
 	    		case this.KEY_MAP.LEFT: 
@@ -145,6 +155,7 @@ $(function(){
 	     * @return null
 	     */
 	    _keyDown: function(){
+	    	
 	    	this._curIndex = this._curIndex < this._listSize - 1 ? this._curIndex + 1 : 0;
 	    	this._listItems.removeClass(this.CONST.SELECTED_CLS).eq(this._curIndex).addClass(this.CONST.SELECTED_CLS);
 	    },
